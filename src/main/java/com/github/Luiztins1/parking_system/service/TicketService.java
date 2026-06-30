@@ -5,6 +5,7 @@ import com.github.Luiztins1.parking_system.model.entity.Ticket;
 import com.github.Luiztins1.parking_system.model.enums.TicketStatus;
 import com.github.Luiztins1.parking_system.model.mapper.TicketMapper;
 import com.github.Luiztins1.parking_system.repository.TicketRepository;
+import com.github.Luiztins1.parking_system.utils.BarcodeGeneratorUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final BarcodeGeneratorUtil barcodeGeneratorUtil;
 
     @Transactional
     public Ticket issueTicket(){
@@ -31,6 +33,11 @@ public class TicketService {
         if(activeTickets >= parkingLot) throw new RuntimeException("Estacionamento lotado! Não é possível emitir ticket.");
 
         var ticket = new Ticket();
+        ticket.randomTicketNumber();
+
+        String barcodeSvg = barcodeGeneratorUtil.generateTicketBarcode(ticket.getTicketNumber());
+        ticket.setBarcodeSvg(barcodeSvg);
+
         return ticketRepository.save(ticket);
     };
 

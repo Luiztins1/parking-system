@@ -35,6 +35,10 @@ public class Ticket {
     @Column(name = "ticket_number", unique = true, length = 8)
     private String ticketNumber;
 
+    @Lob
+    @Column(name = "barcodeSvg", columnDefinition = "TEXT")
+    private String barcodeSvg;
+
     @Column(name = "ticket_status")
     private TicketStatus status = TicketStatus.ACTIVE;
 
