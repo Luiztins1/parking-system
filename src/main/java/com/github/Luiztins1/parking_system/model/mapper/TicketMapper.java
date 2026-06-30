@@ -12,7 +12,7 @@ public class TicketMapper {
 
         return new TicketDTO(
                 ticket.getId(),
-                ticket.getValue(),
+                null,
                 ticket.getCheckInTime(),
                 ticket.getExitTime(),
                 ticket.getTicketNumber(),
@@ -26,7 +26,7 @@ public class TicketMapper {
         Ticket ticket = new Ticket();
 
         ticket.setId(ticketDTO.id());
-        ticket.setValue(ticketDTO.value());
+        ticket.setValue(null);
         ticket.setCheckInTime(ticketDTO.checkInTime());
         ticket.setExitTime(ticketDTO.exitTime());
         ticket.setTicketNumber(ticketDTO.ticketNumber());

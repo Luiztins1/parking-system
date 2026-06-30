@@ -39,7 +39,8 @@ public class TicketService {
     }
 
     public Ticket searchTicketActiveForPayment(String ticketNumber){
-        return ticketRepository.findByTicketNumberAndStatus(ticketNumber, TicketStatus.ACTIVE);
+        return ticketRepository.findByTicketNumberAndStatus(ticketNumber, TicketStatus.ACTIVE)
+                .orElseThrow(() -> new RuntimeException("Ticket não encontrado ou já finalizado."));
     }
 
     @Transactional
@@ -55,7 +56,7 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
-    public BigDecimal paymentExit(LocalDateTime checkInTime, LocalDateTime exitTime){
+    private BigDecimal paymentExit(LocalDateTime checkInTime, LocalDateTime exitTime){
         Duration timeDifference = Duration.between(checkInTime, exitTime);
         long timeInMinutes = timeDifference.toMinutes();
 
