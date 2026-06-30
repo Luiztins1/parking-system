@@ -1,7 +1,6 @@
 package com.github.Luiztins1.parking_system.model.mapper;
 
 import com.github.Luiztins1.parking_system.controller.dto.TicketDTO;
-import com.github.Luiztins1.parking_system.model.entity.Person;
 import com.github.Luiztins1.parking_system.model.entity.Ticket;
 import lombok.NoArgsConstructor;
 
@@ -17,8 +16,7 @@ public class TicketMapper {
                 ticket.getCheckInTime(),
                 ticket.getExitTime(),
                 ticket.getTicketNumber(),
-                //Provisório
-                ticket.getPerson().getId() != null ? ticket.getPerson().getId() : null
+                ticket.getStatus()
         );
     }
 
@@ -26,14 +24,13 @@ public class TicketMapper {
         if(ticketDTO == null) return null;
 
         Ticket ticket = new Ticket();
-        Person person = ticket.getPerson();
 
         ticket.setId(ticketDTO.id());
         ticket.setValue(ticketDTO.value());
         ticket.setCheckInTime(ticketDTO.checkInTime());
         ticket.setExitTime(ticketDTO.exitTime());
         ticket.setTicketNumber(ticketDTO.ticketNumber());
-        ticket.setPerson(person);
+        ticket.setStatus(ticketDTO.status());
 
         return ticket;
     }

@@ -1,5 +1,6 @@
 package com.github.Luiztins1.parking_system.model.entity;
 
+import com.github.Luiztins1.parking_system.model.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,23 +23,25 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "value", nullable = false)
+    @Column(name = "value")
     private BigDecimal value;
 
-    @Column(name = "check_in_time", nullable = false)
+    @Column(name = "check_in_time")
     private LocalDateTime checkInTime;
 
-    @Column(name = "exit_time", nullable = false)
+    @Column(name = "exit_time")
     private LocalDateTime exitTime;
 
-    @Column(name = "ticket_number", nullable = false, unique = true, length = 8)
+    @Column(name = "ticket_number", unique = true, length = 8)
     private String ticketNumber;
 
-    @Column(name = "person", nullable = false)
-    private Person person;
+    @Column(name = "ticket_status")
+    private TicketStatus status = TicketStatus.ACTIVE;
 
     @PrePersist
     public void randomTicketNumber(){
+        this.checkInTime = LocalDateTime.now();
+
         Random random = new Random();
         int number = 10000000 + random.nextInt(900000000);
         this.ticketNumber = String.valueOf(number);
