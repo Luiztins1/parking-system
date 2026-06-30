@@ -1,0 +1,11 @@
+package com.github.Luiztins1.parking_system.controller.dto;
+
+import java.util.List;
+import java.util.UUID;
+
+public record UserAuthDTO(
+        UUID id,
+        String login,
+        String password,
+        List<String> roles )  {
+}

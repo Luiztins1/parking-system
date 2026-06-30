@@ -25,8 +25,8 @@ public class Ticket {
     @Column(name = "value", nullable = false)
     private BigDecimal value;
 
-    @Column(name = "check_in", nullable = false)
-    private LocalDateTime checkIn;
+    @Column(name = "check_in_time", nullable = false)
+    private LocalDateTime checkInTime;
 
     @Column(name = "exit_time", nullable = false)
     private LocalDateTime exitTime;
