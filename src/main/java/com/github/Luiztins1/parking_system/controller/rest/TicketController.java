@@ -6,6 +6,7 @@ import com.github.Luiztins1.parking_system.model.mapper.TicketMapper;
 import com.github.Luiztins1.parking_system.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,6 +22,7 @@ public class TicketController {
     private final TicketService ticketService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TicketDTO> issueTicket(){
         var ticket = ticketService.issueTicket();
 
@@ -34,6 +36,7 @@ public class TicketController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TicketDTO>> findAll(){
         List<TicketDTO> ticketList = ticketService.findAllTickets()
                 .stream()
@@ -46,6 +49,7 @@ public class TicketController {
     }
 
     @GetMapping("/{ticketNumber}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TicketDTO> searchTicketActiveForPayment(@PathVariable String ticketNumber){
         var ticket = ticketService.searchTicketActiveForPayment(ticketNumber);
         var ticketDTO = TicketMapper.toDto(ticket);
@@ -54,6 +58,7 @@ public class TicketController {
     }
 
     @PutMapping("/{ticketNumber}/checkout")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TicketDTO> processExit(@PathVariable String ticketNumber){
         var ticket = ticketService.processExit(ticketNumber);
         var ticketDTO = TicketMapper.toDto(ticket);
