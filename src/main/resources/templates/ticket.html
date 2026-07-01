@@ -35,12 +35,12 @@
             border-bottom: 2px dashed #f0f0f0;
             padding-bottom: 16px;
             margin-bottom: 20px;
-            text-align: center; /* Centraliza o título */
+            text-align: center;
         }
 
         .info {
             text-align: left;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .info p {
@@ -62,7 +62,6 @@
             font-weight: 600;
         }
 
-        /* Estilização moderna e dinâmica para as Badges de Status */
         .badge {
             padding: 4px 10px;
             border-radius: 6px;
@@ -72,34 +71,40 @@
             text-transform: uppercase;
         }
 
-        /* Detecta se é ACTIVE/Ativo ou se mudou para Pago/Finalizado */
         .badge:not(:empty) {
             background-color: #e6f4ea;
             color: #137333;
         }
 
-        /* Caso seu status mude explicitamente para 'FINALIZADO' ou 'PAGO', a cor se ajusta sutilmente */
-        .badge[text*="FIN"], .badge[text*="PAG"], .badge[text*="Fin"], .badge[text*="Pag"] {
+        .badge[text*="FIN"], .badge[text*="PAG"], .badge[text*="Fin"], .badge[text*="Pag"], .badge[text*="CLOSE"], .badge[text*="Close"] {
             background-color: #e8f0fe;
             color: #1a73e8;
         }
 
+        .observation-box {
+            background-color: #fcfcfc;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+            line-height: 1.5;
+        }
+
         .barcode-container {
-            margin-top: 24px;
-            padding: 16px;
-            background: #fcfcfc;
-            border: 1px dashed #e0e0e0;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center; /* Centraliza horizontalmente */
-            align-items: center;     /* Centraliza verticalmente */
+            margin-top: 28px;
+            width: 100%;
+            display: grid;
+            place-items: center;
         }
 
         .barcode-container svg {
-            display: block;
-            margin: 0 auto; /* Força centralização */
-            max-width: 260px;
-            height: auto;
+            display: block !important;
+            margin: 0 auto !important;
+            max-width: 250px;
+            width: 100% !important;
+            height: auto !important;
         }
     </style>
 </head>
@@ -115,11 +120,21 @@
             <span th:text="${#strings.contains(checkInTime, 'T') ? #temporals.format(checkInTime, 'dd/MM/yyyy HH:mm:ss') : checkInTime}">01/01/2026 00:00:00</span>
         </p>
 
+        <p th:if="${exitTime != null}">
+            <strong>Saída:</strong>
+            <span th:text="${#strings.contains(exitTime, 'T') ? #temporals.format(exitTime, 'dd/MM/yyyy HH:mm:ss') : exitTime}">01/01/2026 00:00:00</span>
+        </p>
+
         <p><strong>Valor:</strong>
             <span th:text="${value != null} ? 'R$ ' + ${#numbers.formatDecimal(value, 1, 2, 'POINT')} : 'R$ 0,00'">R$ 0,00</span>
         </p>
 
         <p><strong>Status:</strong> <span class="badge" th:text="${status}">Status</span></p>
+
+        <div class="observation-box">
+            <strong>Informações de Cobrança:</strong><br>
+            Tarifa fixa de R$ 6,50 por hora. A tolerância inicial ou frações de hora inferiores a 60 minutos serão cobradas pelo valor integral da tarifa vigente (R$ 6,50).
+        </div>
     </div>
 
     <div class="barcode-container" th:utext="${barcodeSvg}">

@@ -23,6 +23,7 @@ public class TicketWebController {
 
         model.addAttribute("ticketNumber", ticketNumber);
         model.addAttribute("checkInTime", ticket.getCheckInTime());
+        model.addAttribute("exitTime", ticket.getExitTime());
         model.addAttribute("value", ticket.getValue());
         model.addAttribute("status", ticket.getStatus());
 
