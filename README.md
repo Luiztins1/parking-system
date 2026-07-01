@@ -92,7 +92,7 @@ public class DatabaseSeeder {
                 var userAuthAdmin = new UserAuth();
                 userAuthAdmin.setLogin("TROQUE-ME");
                 userAuthAdmin.setPassword(passwordEncoder.encode("TROQUE-ME"));
-                userAuthAdmin.setRoles(List.of("ADMIN"));
+                userAuthAdmin.setRoles(List.of("TROQUE-ME"));
 
                 repository.save(userAuthAdmin);
             }
