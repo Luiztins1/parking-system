@@ -9,5 +9,6 @@ import java.util.UUID;
 
 public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     Optional<Ticket> findByTicketNumberAndStatus(String ticketNumber, TicketStatus status);
+    Ticket findByTicketNumber(String ticketNumber);
     long countByStatus(TicketStatus status);
 }

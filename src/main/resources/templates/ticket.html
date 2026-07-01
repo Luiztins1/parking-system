@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estacionamento - Visualizar Ticket</title>
+    <style>
+        body {
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .ticket-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eaeaea;
+            width: 360px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #1a1a1a;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 2px dashed #f0f0f0;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            text-align: center; /* Centraliza o título */
+        }
+
+        .info {
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        .info p {
+            margin: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .info p strong {
+            color: #222;
+            font-weight: 500;
+        }
+
+        .info p span {
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Estilização moderna e dinâmica para as Badges de Status */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Detecta se é ACTIVE/Ativo ou se mudou para Pago/Finalizado */
+        .badge:not(:empty) {
+            background-color: #e6f4ea;
+            color: #137333;
+        }
+
+        /* Caso seu status mude explicitamente para 'FINALIZADO' ou 'PAGO', a cor se ajusta sutilmente */
+        .badge[text*="FIN"], .badge[text*="PAG"], .badge[text*="Fin"], .badge[text*="Pag"] {
+            background-color: #e8f0fe;
+            color: #1a73e8;
+        }
+
+        .barcode-container {
+            margin-top: 24px;
+            padding: 16px;
+            background: #fcfcfc;
+            border: 1px dashed #e0e0e0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center;     /* Centraliza verticalmente */
+        }
+
+        .barcode-container svg {
+            display: block;
+            margin: 0 auto; /* Força centralização */
+            max-width: 260px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="ticket-card">
+    <h2>TICKET DE ESTACIONAMENTO</h2>
+
+    <div class="info">
+        <p><strong>Número:</strong> <span th:text="${ticketNumber}">00000000</span></p>
+
+        <p><strong>Entrada:</strong>
+            <span th:text="${#strings.contains(checkInTime, 'T') ? #temporals.format(checkInTime, 'dd/MM/yyyy HH:mm:ss') : checkInTime}">01/01/2026 00:00:00</span>
+        </p>
+
+        <p><strong>Valor:</strong>
+            <span th:text="${value != null} ? 'R$ ' + ${#numbers.formatDecimal(value, 1, 2, 'POINT')} : 'R$ 0,00'">R$ 0,00</span>
+        </p>
+
+        <p><strong>Status:</strong> <span class="badge" th:text="${status}">Status</span></p>
+    </div>
+
+    <div class="barcode-container" th:utext="${barcodeSvg}">
+    </div>
+</div>
+
+</body>
+</html>
