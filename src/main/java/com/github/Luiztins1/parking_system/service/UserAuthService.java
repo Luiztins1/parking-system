@@ -4,6 +4,7 @@ import com.github.Luiztins1.parking_system.controller.dto.UserAuthDTO;
 import com.github.Luiztins1.parking_system.model.entity.UserAuth;
 import com.github.Luiztins1.parking_system.model.mapper.UserAuthMapper;
 import com.github.Luiztins1.parking_system.repository.UserAuthRepository;
+import com.github.Luiztins1.parking_system.validator.UserAuthValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class UserAuthService {
 
     private final UserAuthRepository userAuthRepository;
+    private final UserAuthValidator userAuthValidator;
 
     @Transactional
     public UserAuth registerUserAuth(UserAuthDTO userAuthDTO){
@@ -44,16 +46,16 @@ public class UserAuthService {
 
     }
 
-   /* public void cancelUserAuth(UUID id){
-        authValidator.validateSource(id);
+   public void cancelUserAuth(UUID id){
+       userAuthValidator.validateSource(id);
         userAuthRepository.deleteById(id);
     }
 
     public Optional<UserAuth> findByid(UUID id){
-        return Optional.of(authValidator.validateSource(id));
+        return Optional.of(userAuthValidator.validateSource(id));
     }
 
     public Optional<UserAuth> findByLogin(String login){
-        return Optional.of(authValidator.validateFindByLogin(login));
-    }*/
+        return Optional.of(userAuthValidator.validateFindByLogin(login));
+    }
 }
