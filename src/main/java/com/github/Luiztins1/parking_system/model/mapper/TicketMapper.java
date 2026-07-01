@@ -12,12 +12,16 @@ public class TicketMapper {
     public static TicketDTO toDto(Ticket ticket){
         if(ticket == null) return null;
 
+        String ticketBarcodeSvg = ticket.getBarcodeSvg();
+        String barcodeSvgFormat = String.format("<svg>%s</svg>",ticketBarcodeSvg);
+
         return new TicketDTO(
                 ticket.getId(),
                 ticket.getValue(),
                 ticket.getCheckInTime(),
                 ticket.getExitTime(),
                 ticket.getTicketNumber(),
+                barcodeSvgFormat,
                 ticket.getStatus()
         );
     }
@@ -32,6 +36,7 @@ public class TicketMapper {
         ticket.setCheckInTime(ticketDTO.checkInTime());
         ticket.setExitTime(ticketDTO.exitTime());
         ticket.setTicketNumber(ticketDTO.ticketNumber());
+        ticket.setBarcodeSvg(ticketDTO.barcodeSvg());
         ticket.setStatus(ticketDTO.status());
 
         return ticket;

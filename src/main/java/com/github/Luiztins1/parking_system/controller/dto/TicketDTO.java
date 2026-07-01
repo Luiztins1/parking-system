@@ -12,5 +12,6 @@ public record TicketDTO(
         LocalDateTime checkInTime,
         LocalDateTime exitTime,
         String ticketNumber,
+        String barcodeSvg,
         TicketStatus status) {
 }
