@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface UserAuthRepository extends JpaRepository<UserAuth, UUID> {
     UserAuth findByLogin(String login);
     boolean existsByLogin(String login);
+    void deleteByLogin(String login);
 }

@@ -8,6 +8,7 @@ import com.github.Luiztins1.parking_system.validator.UserAuthValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,12 +21,13 @@ public class UserAuthService {
 
     private final UserAuthRepository userAuthRepository;
     private final UserAuthValidator userAuthValidator;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserAuth registerUserAuth(UserAuthDTO userAuthDTO){
         var user = UserAuthMapper.toEntity(userAuthDTO);
         var password = user.getPassword();
-        //user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(password));
 
         return userAuthRepository.save(user);
     }
@@ -39,16 +41,17 @@ public class UserAuthService {
                 .map(userAuth -> {
                     userAuth.setPassword(userAuthDTO.password());
 
-                    if(userAuth.getId() == null) throw new UsernameNotFoundException("Usuário não encontado.");
+                    if(userAuth.getId() == null) throw new UsernameNotFoundException("Usuário não encontrado.");
 
                     return userAuthRepository.save(userAuth);
                 });
 
     }
 
-   public void cancelUserAuth(UUID id){
-       userAuthValidator.validateSource(id);
-        userAuthRepository.deleteById(id);
+   public void cancelUserAuth(String login){
+        var userAuth = userAuthRepository.findByLogin(login);
+        if(userAuth == null) throw new UsernameNotFoundException("Usuário não encnotrado.");
+        userAuthRepository.deleteByLogin(userAuth.getLogin());
     }
 
     public Optional<UserAuth> findByid(UUID id){
