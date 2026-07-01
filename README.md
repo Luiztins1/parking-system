@@ -4,7 +4,7 @@
 
 ## 📺 Demonstração do Sistema
 Aqui você pode ver o fluxo completo de criação de um ticket, consulta web e o processo de checkout:
-https://github.com/user-attachments/assets/57302ae7-316b-41e3-b7bc-5e41ef4901f1
+<video src="https://github.com/user-attachments/assets/57302ae7-316b-41e3-b7bc-5e41ef4901f1" width="100%" controls></video>
 
 # 🛠 Tecnologias e ferramentas
 * **Linguagem:** Java 21
