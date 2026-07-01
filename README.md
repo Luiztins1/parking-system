@@ -77,9 +77,9 @@ O Spring Security Basic Auth está configurado por padrão com um usuário para 
 * `Password: admin123`
 
 Caso tenha interesse de trocar as configurações do usuário padrão basta ir até (`src/main/config/DatabaseSeeder.java`) e mudar os seguintes campos:
-* `userAuth.setLogin("o login que deseja.)`
-*  `userAuth.setPassword("a senha que deseja.)`
-*  `userAuth.setRoles("a role que deseja.)`
+* `userAuth.setLogin("o login que deseja.")`
+*  `userAuth.setPassword("a senha que deseja.")`
+*  `userAuth.setRoles("a role que deseja.")`
 
 ```java
 @Configuration
