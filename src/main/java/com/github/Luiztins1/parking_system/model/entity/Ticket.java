@@ -32,22 +32,21 @@ public class Ticket {
     @Column(name = "exit_time")
     private LocalDateTime exitTime;
 
-    @Column(name = "ticket_number", unique = true, length = 8)
+    @Column(name = "ticket_number", unique = true, length = 9)
     private String ticketNumber;
 
-    @Lob
     @Column(name = "barcodeSvg", columnDefinition = "TEXT")
     private String barcodeSvg;
 
     @Column(name = "ticket_status")
+    @Enumerated(EnumType.STRING)
     private TicketStatus status = TicketStatus.ACTIVE;
 
-    @PrePersist
-    public void randomTicketNumber(){
+    public void initTicketNumber(){
         this.checkInTime = LocalDateTime.now();
 
         Random random = new Random();
-        int number = 10000000 + random.nextInt(900000000);
+        int number = 100000000 + random.nextInt(900000000);
         this.ticketNumber = String.valueOf(number);
     }
 }

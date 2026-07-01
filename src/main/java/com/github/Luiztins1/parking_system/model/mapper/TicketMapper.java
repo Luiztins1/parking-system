@@ -4,6 +4,8 @@ import com.github.Luiztins1.parking_system.controller.dto.TicketDTO;
 import com.github.Luiztins1.parking_system.model.entity.Ticket;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @NoArgsConstructor
 public class TicketMapper {
 
@@ -12,7 +14,7 @@ public class TicketMapper {
 
         return new TicketDTO(
                 ticket.getId(),
-                null,
+                ticket.getValue(),
                 ticket.getCheckInTime(),
                 ticket.getExitTime(),
                 ticket.getTicketNumber(),
@@ -26,7 +28,7 @@ public class TicketMapper {
         Ticket ticket = new Ticket();
 
         ticket.setId(ticketDTO.id());
-        ticket.setValue(null);
+        ticket.setValue(ticketDTO.value());
         ticket.setCheckInTime(ticketDTO.checkInTime());
         ticket.setExitTime(ticketDTO.exitTime());
         ticket.setTicketNumber(ticketDTO.ticketNumber());

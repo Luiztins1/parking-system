@@ -33,7 +33,7 @@ public class TicketService {
         if(activeTickets >= parkingLot) throw new RuntimeException("Estacionamento lotado! Não é possível emitir ticket.");
 
         var ticket = new Ticket();
-        ticket.randomTicketNumber();
+        ticket.initTicketNumber();
 
         String barcodeSvg = barcodeGeneratorUtil.generateTicketBarcode(ticket.getTicketNumber());
         ticket.setBarcodeSvg(barcodeSvg);
@@ -66,13 +66,12 @@ public class TicketService {
     private BigDecimal paymentExit(LocalDateTime checkInTime, LocalDateTime exitTime){
         Duration timeDifference = Duration.between(checkInTime, exitTime);
         long timeInMinutes = timeDifference.toMinutes();
-
-        if(timeInMinutes <= 15) return BigDecimal.ZERO;
+       // if(timeInMinutes <= 10) return BigDecimal.ZERO;
 
         double hours = Math.ceil(timeInMinutes/60.0);
 
         BigDecimal valuePerHour = new BigDecimal("6.50");
 
-        return valuePerHour.multiply(BigDecimal.valueOf(hours).setScale(2, RoundingMode.HALF_UP));
+        return valuePerHour.multiply(BigDecimal.valueOf(hours)).setScale(2, RoundingMode.HALF_UP);
     }
 }

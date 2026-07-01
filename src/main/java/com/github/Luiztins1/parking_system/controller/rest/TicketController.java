@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/ap/v1/tickets")
+@RequestMapping("/api/v1/tickets")
 @RequiredArgsConstructor
 public class TicketController {
 
