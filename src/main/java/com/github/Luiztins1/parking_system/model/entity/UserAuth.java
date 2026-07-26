@@ -28,7 +28,8 @@ public class UserAuth extends Auditable implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Type(ListArrayType.class)
-    @Column(name = "roles", nullable = false, columnDefinition = "varchar[]")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "users_auths_roles", joinColumns = @JoinColumn(name = "user_auth_id"))
+    @Column(name = "role")
     private List<String> roles;
 }

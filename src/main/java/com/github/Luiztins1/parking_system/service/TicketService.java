@@ -56,17 +56,18 @@ public class TicketService {
         ticket.setExitTime(LocalDateTime.now());
 
         BigDecimal payment = paymentExit(ticket.getCheckInTime(), ticket.getExitTime());
-        ticket.setValue(payment);
+        ticket.setValue(payment);  
 
         ticket.setStatus(TicketStatus.CLOSED);
 
         return ticketRepository.save(ticket);
     }
 
-    private BigDecimal paymentExit(LocalDateTime checkInTime, LocalDateTime exitTime){
+    public BigDecimal paymentExit(LocalDateTime checkInTime, LocalDateTime exitTime){
         Duration timeDifference = Duration.between(checkInTime, exitTime);
         long timeInMinutes = timeDifference.toMinutes();
-       // if(timeInMinutes <= 10) return BigDecimal.ZERO;
+
+        if(timeInMinutes <= 5) return BigDecimal.ZERO;
 
         double hours = Math.ceil(timeInMinutes/60.0);
 

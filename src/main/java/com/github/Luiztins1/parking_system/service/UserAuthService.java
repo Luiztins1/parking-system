@@ -36,9 +36,11 @@ public class UserAuthService {
         return userAuthRepository.findAll();
     }
 
+    @Transactional
     public Optional<UserAuth> updateUserAuth(UUID id, UserAuthDTO userAuthDTO){
         return userAuthRepository.findById(id)
                 .map(userAuth -> {
+                    userAuth.setLogin(userAuthDTO.login());
                     userAuth.setPassword(userAuthDTO.password());
 
                     if(userAuth.getId() == null) throw new UsernameNotFoundException("Usuário não encontrado.");
@@ -48,13 +50,14 @@ public class UserAuthService {
 
     }
 
+    @Transactional
    public void cancelUserAuth(String login){
         var userAuth = userAuthRepository.findByLogin(login);
         if(userAuth == null) throw new UsernameNotFoundException("Usuário não encnotrado.");
         userAuthRepository.deleteByLogin(userAuth.getLogin());
     }
 
-    public Optional<UserAuth> findByid(UUID id){
+    public Optional<UserAuth> findById(UUID id){
         return Optional.of(userAuthValidator.validateSource(id));
     }
 
