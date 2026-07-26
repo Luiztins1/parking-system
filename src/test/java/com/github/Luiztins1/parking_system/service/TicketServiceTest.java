@@ -38,7 +38,7 @@ public class TicketServiceTest {
         assertNotNull(ticketInit.getId());
         assertThat(ticketInit.getTicketNumber()).isNotEmpty();
         assertThat(ticketInit.getBarcodeSvg()).isNotEmpty();
-        assertThat(ticketInit.getStatus()).isEqualTo(TicketStatus.ACTIVE);
+        assertThat(ticketInit.getStatus()).isEqualTo(TicketStatus.PENDENTE);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class TicketServiceTest {
         for(int i = 0; i < 200; i++){
             Ticket t = new Ticket();
             t.initTicketNumber();
-            t.setStatus(TicketStatus.ACTIVE);
+            t.setStatus(TicketStatus.PENDENTE);
             ticketRepository.save(t);
         }
 
@@ -81,7 +81,7 @@ public class TicketServiceTest {
         assertNotNull(ticketSearch.getCheckInTime());
         assertNotNull(ticketSearch.getExitTime());
         assertThat(value).isGreaterThan(BigDecimal.ZERO);
-        assertThat(ticketSearch.getStatus()).isEqualTo(TicketStatus.CLOSED);
+        assertThat(ticketSearch.getStatus()).isEqualTo(TicketStatus.PAGO);
     }
 
     @Test

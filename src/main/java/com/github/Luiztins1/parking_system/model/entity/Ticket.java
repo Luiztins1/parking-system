@@ -7,7 +7,6 @@ import lombok.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -41,7 +40,7 @@ public class Ticket extends Auditable implements Serializable {
 
     @Column(name = "ticket_status")
     @Enumerated(EnumType.STRING)
-    private TicketStatus status = TicketStatus.ACTIVE;
+    private TicketStatus status = TicketStatus.PENDENTE;
 
     public void initTicketNumber(){
         this.checkInTime = LocalDateTime.now();

@@ -163,12 +163,12 @@
     </div>
 
     <div class="actions">
-        <form th:action="@{/tickets/entrar}" method="post">
+        <form th:action="@{/tickets/enter}" method="post">
             <input type="hidden" th:value="${ticketNumber}" name="ticketNumber"/>
             <button type="submit">Gerar Ticket</button>
         </form>
 
-        <form th:action="@{/tickets/sair}" method="post">
+        <form th:action="@{/tickets/exit}" method="post">
             <input type="hidden" th:value="${ticketNumber}" name="ticketNumber"/>
             <button type="submit">Verificar Ticket</button>
         </form>
