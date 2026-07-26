@@ -76,7 +76,7 @@
             color: #137333;
         }
 
-        .badge[text*="FIN"], .badge[text*="PAG"], .badge[text*="Fin"], .badge[text*="Pag"], .badge[text*="CLOSE"], .badge[text*="Close"] {
+        .badge[text*="CLOSED"] {
             background-color: #e8f0fe;
             color: #1a73e8;
         }
@@ -106,6 +106,28 @@
             width: 100% !important;
             height: auto !important;
         }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .actions button {
+            background-color: #1a73e8;
+            color: #fff;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        .actions button:hover {
+            background-color: #1558b0;
+        }
     </style>
 </head>
 <body>
@@ -114,22 +136,22 @@
     <h2>TICKET DE ESTACIONAMENTO</h2>
 
     <div class="info">
-        <p><strong>Número:</strong> <span th:text="${ticketNumber}">00000000</span></p>
+        <p><strong>Número:</strong> <span th:text="${ticketNumber}">---</span></p>
 
         <p><strong>Entrada:</strong>
-            <span th:text="${#strings.contains(checkInTime, 'T') ? #temporals.format(checkInTime, 'dd/MM/yyyy HH:mm:ss') : checkInTime}">01/01/2026 00:00:00</span>
+            <span th:text="${#temporals.format(checkInTime, 'dd/MM/yyyy HH:mm:ss')}">---</span>
         </p>
 
         <p th:if="${exitTime != null}">
             <strong>Saída:</strong>
-            <span th:text="${#strings.contains(exitTime, 'T') ? #temporals.format(exitTime, 'dd/MM/yyyy HH:mm:ss') : exitTime}">01/01/2026 00:00:00</span>
+            <span th:text="${#temporals.format(exitTime, 'dd/MM/yyyy HH:mm:ss')}">---</span>
         </p>
 
         <p><strong>Valor:</strong>
-            <span th:text="${value != null} ? 'R$ ' + ${#numbers.formatDecimal(value, 1, 2, 'POINT')} : 'R$ 0,00'">R$ 0,00</span>
+            <span th:text="${value != null} ? 'R$ ' + ${#numbers.formatDecimal(value, 1, 2, 'POINT')} : 'R$ 0,00'">---</span>
         </p>
 
-        <p><strong>Status:</strong> <span class="badge" th:text="${status}">Status</span></p>
+        <p><strong>Status:</strong> <span class="badge" th:text="${status}">---</span></p>
 
         <div class="observation-box">
             <strong>Informações de Cobrança:</strong><br>
@@ -138,6 +160,18 @@
     </div>
 
     <div class="barcode-container" th:utext="${barcodeSvg}">
+    </div>
+
+    <div class="actions">
+        <form th:action="@{/tickets/entrar}" method="post">
+            <input type="hidden" th:value="${ticketNumber}" name="ticketNumber"/>
+            <button type="submit">Gerar Ticket</button>
+        </form>
+
+        <form th:action="@{/tickets/sair}" method="post">
+            <input type="hidden" th:value="${ticketNumber}" name="ticketNumber"/>
+            <button type="submit">Verificar Ticket</button>
+        </form>
     </div>
 </div>
 
