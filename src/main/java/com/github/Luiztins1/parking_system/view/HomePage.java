@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomePage {
     @GetMapping("/")
     public String redirectToTicket() {
-        return "redirect:/ticket/new"; // ajuste para a rota correta
+        return "redirect:/ticket/new";
     }
 }

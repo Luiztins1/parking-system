@@ -24,7 +24,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(Customizer.withDefaults())
+                .formLogin(login ->
+                        login.defaultSuccessUrl("/ticket/new", true))
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizer -> {
                     authorizer.requestMatchers("/login").permitAll();
