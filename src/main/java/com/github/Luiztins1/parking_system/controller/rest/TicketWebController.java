@@ -16,7 +16,7 @@ public class TicketWebController {
 
     private final TicketService ticketService;
 
-    @GetMapping("/tickets/new")
+    @GetMapping("/ticket/new")
     @Transactional
     public String generatedTicket(Model model){
         Ticket ticket = ticketService.issueTicket();
