@@ -24,7 +24,7 @@ public class Ticket extends Auditable implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "value")
+    @Column(name = "ticket_value")
     private BigDecimal value;
 
     @Column(name = "check_in_time")

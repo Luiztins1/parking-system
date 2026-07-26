@@ -69,7 +69,7 @@ public class UserAuthController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<UserAuthDTO> findById(@PathVariable UUID id){
-        return userAuthService.findByid(id)
+        return userAuthService.findById(id)
                 .map(UserAuthMapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
