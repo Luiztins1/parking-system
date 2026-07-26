@@ -35,7 +35,20 @@ public class TicketWebController {
     @PostMapping("/tickets/exit")
     @Transactional
     public String exit(@RequestParam String ticketNumber, Model model){
-        Ticket ticket = ticketService.processExit(ticketNumber);
+        Ticket ticket = ticketService.searchTicketActiveForPayment(ticketNumber);
+
+        if (ticket == null) {
+            model.addAttribute("error", "Ticket não encontrado");
+            return "ticket";
+        }
+
+        if ("CLOSED".equals(ticket.getStatus())) {
+            model.addAttribute("error", "Este ticket já foi encerrado.");
+            popularModel(model, ticket);
+            return "ticket";
+        }
+
+        ticket = ticketService.processExit(ticketNumber);
         popularModel(model, ticket);
         return "ticket";
     }
