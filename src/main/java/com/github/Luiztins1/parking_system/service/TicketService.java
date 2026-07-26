@@ -1,9 +1,7 @@
 package com.github.Luiztins1.parking_system.service;
 
-import com.github.Luiztins1.parking_system.controller.dto.TicketDTO;
 import com.github.Luiztins1.parking_system.model.entity.Ticket;
 import com.github.Luiztins1.parking_system.model.enums.TicketStatus;
-import com.github.Luiztins1.parking_system.model.mapper.TicketMapper;
 import com.github.Luiztins1.parking_system.repository.TicketRepository;
 import com.github.Luiztins1.parking_system.utils.BarcodeGeneratorUtil;
 import jakarta.transaction.Transactional;
@@ -15,7 +13,6 @@ import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +24,7 @@ public class TicketService {
     @Transactional
     public Ticket issueTicket(){
 
-        long activeTickets = ticketRepository.countByStatus(TicketStatus.ACTIVE);
+        long activeTickets = ticketRepository.countByStatus(TicketStatus.PENDENTE);
         long parkingLot = 200;
 
         if(activeTickets >= parkingLot) throw new RuntimeException("Estacionamento lotado! Não é possível emitir ticket.");
@@ -46,7 +43,7 @@ public class TicketService {
     }
 
     public Ticket searchTicketActiveForPayment(String ticketNumber){
-        return ticketRepository.findByTicketNumberAndStatus(ticketNumber, TicketStatus.ACTIVE)
+        return ticketRepository.findByTicketNumberAndStatus(ticketNumber, TicketStatus.PENDENTE)
                 .orElseThrow(() -> new RuntimeException("Ticket não encontrado ou já finalizado."));
     }
 
@@ -58,7 +55,7 @@ public class TicketService {
         BigDecimal payment = paymentExit(ticket.getCheckInTime(), ticket.getExitTime());
         ticket.setValue(payment);  
 
-        ticket.setStatus(TicketStatus.CLOSED);
+        ticket.setStatus(TicketStatus.PAGO);
 
         return ticketRepository.save(ticket);
     }

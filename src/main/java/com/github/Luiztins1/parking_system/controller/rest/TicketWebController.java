@@ -24,7 +24,7 @@ public class TicketWebController {
         return "ticket";
     }
 
-    @PostMapping("/tickets/entrar")
+    @PostMapping("/tickets/enter")
     @Transactional
     public String enter(Model model){
         Ticket ticket = ticketService.issueTicket();

@@ -35,7 +35,7 @@ public class TicketRepositoryTest {
     @Test
     void shouldSaveTicket(){
         assertNotNull(ticketInit.getId());
-        assertEquals(TicketStatus.ACTIVE, ticketInit.getStatus());
+        assertEquals(TicketStatus.PENDENTE, ticketInit.getStatus());
     }
 
     @Test
