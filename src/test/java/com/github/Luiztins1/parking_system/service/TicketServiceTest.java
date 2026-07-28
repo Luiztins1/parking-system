@@ -120,12 +120,24 @@ public class TicketServiceTest {
 
     @Test
     void processExit(){
+
+        Mockito.when(ticketRepository.findByTicketNumberAndStatus(Mockito.anyString(),
+                        Mockito.any(TicketStatus.class)))
+                .thenReturn(Optional.of(ticketInit));
+
+        Mockito.when(ticketRepository.save(Mockito.any(Ticket.class)))
+                        .thenAnswer(invocation ->{
+                           Ticket saved = invocation.getArgument(0);
+                           saved.setId(UUID.randomUUID());
+                           return saved;
+                        });
+
         ticketInit.setExitTime(LocalDateTime.now().plusHours(2));
 
         BigDecimal value = ticketService.paymentExit(ticketInit.getCheckInTime(), ticketInit.getExitTime());
         var ticketSearch = ticketService.processExit(ticketInit.getTicketNumber());
 
-        assertNotNull(ticketSearch.getTicketNumber());
+        assertThat(ticketSearch.getTicketNumber()).isEqualTo(ticketInit.getTicketNumber());
         assertNotNull(ticketSearch.getCheckInTime());
         assertNotNull(ticketSearch.getExitTime());
         assertThat(value).isGreaterThan(BigDecimal.ZERO);
