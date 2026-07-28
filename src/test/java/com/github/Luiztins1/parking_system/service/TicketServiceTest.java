@@ -1,71 +1,119 @@
 package com.github.Luiztins1.parking_system.service;
 
+import com.github.Luiztins1.parking_system.controller.dto.TicketDTO;
 import com.github.Luiztins1.parking_system.model.entity.Ticket;
 import com.github.Luiztins1.parking_system.model.enums.TicketStatus;
+import com.github.Luiztins1.parking_system.model.mapper.TicketMapper;
 import com.github.Luiztins1.parking_system.repository.TicketRepository;
+import com.github.Luiztins1.parking_system.utils.BarcodeGeneratorUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 public class TicketServiceTest {
 
-    @Autowired
+    @InjectMocks
     TicketService ticketService;
 
-    @Autowired
+    @Mock
     TicketRepository ticketRepository;
 
+    @Mock
+    BarcodeGeneratorUtil barcodeGeneratorUtil;
+
+    TicketDTO dto;
     Ticket ticketInit;
 
     @BeforeEach
     void setUp(){
         ticketRepository.deleteAll();
-        ticketInit = ticketService.issueTicket();
+        dto = new TicketDTO(
+                UUID.randomUUID(),
+                null,
+                LocalDateTime.now(),
+                null,
+                "123456789",
+                "123456789",
+                TicketStatus.PENDENTE);
+
+        ticketInit = TicketMapper.toEntity(dto);
     }
 
     @Test
     void shouldIssueTicket(){
-        assertNotNull(ticketInit.getId());
-        assertThat(ticketInit.getTicketNumber()).isNotEmpty();
-        assertThat(ticketInit.getBarcodeSvg()).isNotEmpty();
-        assertThat(ticketInit.getStatus()).isEqualTo(TicketStatus.PENDENTE);
+
+        Mockito.when(ticketRepository.countByStatus(TicketStatus.PENDENTE))
+                        .thenReturn(0L);
+
+        Mockito.when(barcodeGeneratorUtil.generateTicketBarcode(Mockito.anyString()))
+                        .thenReturn("fakeBarcode");
+
+        Mockito.when(ticketRepository.save(Mockito.any(Ticket.class)))
+                        .thenAnswer(invocation ->{
+                            Ticket saved = invocation.getArgument(0);
+                            saved.setId(UUID.randomUUID());
+                            return saved;
+                        });
+        var result = ticketService.issueTicket();
+
+        assertThat(result.getTicketNumber()).isNotEmpty();
+        assertThat(result.getBarcodeSvg()).isEqualTo("fakeBarcode");
+        assertThat(result.getStatus()).isEqualTo(TicketStatus.PENDENTE);
+
+        Mockito.verify(ticketRepository, Mockito.times(1))
+                .save(Mockito.any(Ticket.class));
     }
 
     @Test
     void shouldIssueTicketWhenParkingAvailable(){
-        for(int i = 0; i < 200; i++){
-            Ticket t = new Ticket();
-            t.initTicketNumber();
-            t.setStatus(TicketStatus.PENDENTE);
-            ticketRepository.save(t);
-        }
+
+        Mockito.when(ticketRepository.countByStatus(TicketStatus.PENDENTE))
+                        .thenReturn(200L);
 
         assertThatThrownBy(() -> ticketService.issueTicket())
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Estacionamento lotado! Não é possível emitir ticket.");
+
+        Mockito.verify(ticketRepository, Mockito.times(1))
+                .countByStatus(Mockito.any(TicketStatus.class));
     }
 
     @Test
     void shouldSearchTicketActiveForPayment(){
+
+        Mockito.when(ticketRepository.findByTicketNumberAndStatus(Mockito.anyString(),
+                        Mockito.any(TicketStatus.class)))
+                .thenReturn(Optional.of(ticketInit));
+
         var ticketActive = ticketService.searchTicketActiveForPayment(ticketInit.getTicketNumber());
 
         assertNotNull(ticketActive.getId());
         assertThat(ticketActive.getTicketNumber()).isNotEmpty();
+
+        Mockito.verify(ticketRepository, Mockito.times(1))
+                .findByTicketNumberAndStatus(Mockito.anyString(), Mockito.any(TicketStatus.class));
     }
 
     @Test
     void shouldTicketActiveWhenNotFound(){
-        assertThatThrownBy(() -> ticketService.searchTicketActiveForPayment("123456789"))
+        assertThatThrownBy(() -> ticketService.searchTicketActiveForPayment(ticketInit.getTicketNumber()))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Ticket não encontrado ou já finalizado.");
     }
