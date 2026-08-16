@@ -19,6 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -71,6 +72,7 @@ public class TicketServiceTest {
                             saved.setId(UUID.randomUUID());
                             return saved;
                         });
+
         var result = ticketService.issueTicket();
 
         assertThat(result.getTicketNumber()).isNotEmpty();
@@ -79,6 +81,20 @@ public class TicketServiceTest {
 
         Mockito.verify(ticketRepository, Mockito.times(1))
                 .save(Mockito.any(Ticket.class));
+    }
+
+    @Test
+    void shouldListAllTicket(){
+
+        Mockito.when(ticketService.findAllTickets())
+                .thenReturn(List.of(ticketInit));
+
+       List<Ticket> ticketList = ticketService.findAllTickets();
+
+       assertThat(ticketList).isNotEmpty();
+
+       Mockito.verify(ticketRepository, Mockito.times(1))
+               .findAll();
     }
 
     @Test
