@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthorizationDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ResponseErrorDTO acessDenied(AuthorizationDeniedException e){
+    public ResponseErrorDTO accessDenied(AuthorizationDeniedException e){
         return new ResponseErrorDTO(HttpStatus.FORBIDDEN, "Você não possui permissão para essa função.", List.of());
     }
 
@@ -69,4 +69,11 @@ public class GlobalExceptionHandler {
                 List.of()
         );
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseErrorDTO illegalArgumentException(){
+        return new ResponseErrorDTO(HttpStatus.CONFLICT, "Ocorreu um conflito.", List.of());
+    }
+
 }

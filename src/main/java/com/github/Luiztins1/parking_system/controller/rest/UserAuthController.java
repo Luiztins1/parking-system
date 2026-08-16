@@ -25,7 +25,7 @@ public class UserAuthController {
     @PostMapping
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<UserAuthDTO> registerUserAuth(@RequestBody UserAuthDTO userAuthDTO){
-        var userAuth = UserAuthMapper.toEntity(userAuthDTO);
+        UserAuth userAuth = userAuthService.registerUserAuth(userAuthDTO);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -52,11 +52,10 @@ public class UserAuthController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<UserAuthDTO> updateUserAuth(@PathVariable UUID id, @RequestBody UserAuthDTO userAuthDTO){
-        Optional<UserAuth> userAuthDTOOptional = userAuthService.updateUserAuth(id, userAuthDTO);
-
-        if(userAuthDTOOptional.isPresent()) return ResponseEntity.ok().build();
-
-        return ResponseEntity.notFound().build();
+       return userAuthService.updateUserAuth(id, userAuthDTO)
+               .map(UserAuthMapper::toDto)
+               .map(ResponseEntity::ok)
+               .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{login}")
@@ -66,7 +65,7 @@ public class UserAuthController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/find-id")
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<UserAuthDTO> findById(@PathVariable UUID id){
         return userAuthService.findById(id)
@@ -77,13 +76,10 @@ public class UserAuthController {
 
     @GetMapping("/{login}")
     @PreAuthorize("hasRole('MANAGER')")
-    public ResponseEntity<UserAuthDTO> findByLogin(String login){
-        Optional<UserAuth> userAuthOptional = userAuthService.findByLogin(login);
-
-        if(userAuthOptional.isPresent()) return ResponseEntity.ok().build();
-
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<UserAuthDTO> findByLogin(@PathVariable String login){
+        return userAuthService.findByLogin(login)
+                .map(UserAuthMapper::toDto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
-
-
 }

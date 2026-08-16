@@ -1,6 +1,7 @@
 package com.github.Luiztins1.parking_system.service;
 
 import com.github.Luiztins1.parking_system.controller.dto.UserAuthDTO;
+import com.github.Luiztins1.parking_system.exceptions.NotFoundException;
 import com.github.Luiztins1.parking_system.model.entity.UserAuth;
 import com.github.Luiztins1.parking_system.model.mapper.UserAuthMapper;
 import com.github.Luiztins1.parking_system.repository.UserAuthRepository;
@@ -11,12 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
@@ -42,7 +40,12 @@ public class UserAuthServiceTest {
     @BeforeEach
     void setUp(){
         userAuthRepository.deleteAll();
-        dto = new UserAuthDTO(UUID.randomUUID(), "admin_test", "admin123", List.of("ADMIN"));
+        dto = new UserAuthDTO(
+                UUID.randomUUID(),
+                "admin_test",
+                "admin123",
+                List.of("ADMIN"));
+
         userAuthInit = UserAuthMapper.toEntity(dto);
     }
 
@@ -52,12 +55,10 @@ public class UserAuthServiceTest {
         Mockito.when(passwordEncoder.encode("admin123"))
                 .thenReturn("passwordEncoder");
 
-        //Devolve um novo objeto com o ID preenchido.
         Mockito.when(userAuthRepository.save(Mockito.any(UserAuth.class)))
                 .thenAnswer(invocation ->{
                    UserAuth saved = invocation.getArgument(0);
                    saved.setId(UUID.randomUUID());
-
                    return saved;
                 });
 
@@ -93,14 +94,16 @@ public class UserAuthServiceTest {
                         .thenReturn(Optional.of(userAuthInit));
 
         Mockito.when(userAuthRepository.save(Mockito.any(UserAuth.class)))
-                .thenAnswer(invocation ->{
-                   UserAuth saved = invocation.getArgument(0);
-                   saved.setId(UUID.randomUUID());
-                   return saved;
-                });
+                .thenReturn(userAuthInit);
 
+        UserAuth registered = userAuthService.registerUserAuth(UserAuthMapper.toDto(userAuthInit));
+        UserAuthDTO upd = new UserAuthDTO(
+                userAuthInit.getId(),
+                "Marcus",
+                "Passw",
+                userAuthInit.getRoles());
 
-        Optional<UserAuth> updated = userAuthService.updateUserAuth(userAuthInit.getId(), dto);
+        Optional<UserAuth> updated = userAuthService.updateUserAuth(registered.getId(), dto);
 
         assertThat(updated).isPresent();
         assertThat(updated.get().getLogin()).isEqualTo(dto.login());
@@ -123,5 +126,36 @@ public class UserAuthServiceTest {
 
         Mockito.verify(userAuthRepository, Mockito.times(1))
                 .deleteByLogin(userAuthInit.getLogin());
+    }
+
+    @Test
+    void shouldFindById(){
+        Mockito.when(userAuthRepository.findById(userAuthInit.getId()))
+                .thenReturn(Optional.of(userAuthInit));
+
+        UserAuth userSearched = userAuthService.findById(userAuthInit.getId())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
+
+        assertThat(userSearched).isNotNull();
+        assertThat(userSearched.getId()).isEqualTo(userAuthInit.getId());
+
+        Mockito.verify(userAuthRepository, Mockito.times(1))
+                .findById(userSearched.getId());
+    }
+
+    @Test
+    void shouldFindByLogin(){
+        Mockito.when(userAuthRepository.findByLogin(userAuthInit.getLogin()))
+                .thenReturn(userAuthInit);
+
+        UserAuth userLogin = userAuthService.findByLogin(userAuthInit.getLogin())
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
+
+        assertThat(userLogin.getLogin()).isNotNull();
+        assertThat(userLogin.getLogin()).isNotEmpty();
+        assertThat(userLogin.getLogin()).isEqualTo(userAuthInit.getLogin());
+
+        Mockito.verify(userAuthRepository, Mockito.times(1))
+                .findByLogin(userLogin.getLogin());
     }
 }
